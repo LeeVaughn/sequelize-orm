@@ -31,7 +31,9 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+// adds any new model to the db object
 db.sequelize = sequelize;
+// assign the Sequelize module to a Sequelize property in the db object
 db.Sequelize = Sequelize;
 
 module.exports = db;
