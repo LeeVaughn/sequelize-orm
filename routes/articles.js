@@ -15,7 +15,7 @@ function asyncHandler(cb){
 
 /* GET articles listing. */
 router.get('/', asyncHandler(async (req, res) => {
-  // finds all articles
+  // finds all articles and orders them by when they were created
   const articles = await Article.findAll({ order: [["createdAt", "DESC"]] });
   res.render("articles/index", { articles: articles, title: "Sequelize-It!" });
 }));
@@ -34,7 +34,9 @@ router.post('/', asyncHandler(async (req, res) => {
 
 /* Edit article form. */
 router.get("/:id/edit", asyncHandler(async(req, res) => {
-  res.render("articles/edit", { article: {}, title: "Edit Article" });
+  // finds an article by its id
+  const article = await Article.findByPk(req.params.id);
+  res.render("articles/edit", { article: article, title: "Edit Article" });
 }));
 
 /* GET individual article. */
@@ -46,16 +48,25 @@ router.get("/:id", asyncHandler(async (req, res) => {
 
 /* Update an article. */
 router.post('/:id/edit', asyncHandler(async (req, res) => {
-  res.redirect("/articles/");
+  // finds an article by its id
+  const article = await Article.findByPk(req.params.id);
+  await article.update(req.body);
+  res.redirect("/articles/" + article.id);
 }));
 
 /* Delete article form. */
 router.get("/:id/delete", asyncHandler(async (req, res) => {
-  res.render("articles/delete", { article: {}, title: "Delete Article" });
+  // finds an article by its id
+  const article = await Article.findByPk(req.params.id);
+
+  res.render("articles/delete", { article: article, title: "Delete Article" });
 }));
 
 /* Delete individual article. */
 router.post('/:id/delete', asyncHandler(async (req ,res) => {
+  // finds an article by its id
+  const article = await Article.findByPk(req.params.id);
+  await article.destroy();
   res.redirect("/articles");
 }));
 
